@@ -10,23 +10,24 @@ Short example
 
 ```js
 var fpl = require('folder-playlist')({
-    song_src: 'path_to_folder', //Could be [path_to_file1, path_to_file2, ..., path_to_fileN]
+    song_src: 'path_to_folder',
+    //Could be [{src:path_to_file1,attr:'GOOD SONG'}, {src:path_to_file2, attr:'GREAT SONG'}]
     shuffle: true, // true or false
     song_types: ['mp3'] // array of file valid extensions
 });
 
-var flp_songs = flp.getSongs();
+var fpl_songs = fpl.getSongs();
 console.log(flp_songs);
 
-var flp_playlist = flp.getPlayList();
+var fpl_playlist = fpl.getPlayList();
 console.log(flp_playlist);
 
-flp.shuffleOn() //Modifies Playlist
+fpl.shuffleOn() //Modifies Playlist
 
-flp_playlist = flp.getPlayList();
+fpl_playlist = fpl.getPlayList();
 console.log(flp_playlist);
 
-var next_song = flp.getNextSong();
+var next_song = fpl.getNextSong();
 // open_your_player_using(next_song);
 console.log(next_song);
 
