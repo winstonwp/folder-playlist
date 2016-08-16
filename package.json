@@ -1,6 +1,6 @@
 {
   "name": "folder-playlist",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Create and manage a Playlist from files in a folder",
   "main": "index.js",
   "scripts": {
