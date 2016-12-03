@@ -52,18 +52,16 @@ module.exports = function(poptions) {
         that.songs = [];
         that.songsForced = [];
         for (var i = 0; i < files.length; i++) {
-            console.log(files[i], i);
-            if (that.options.song_types.indexOf(files[i].src.split('.').pop()) > -1) {
+            if (that.options.song_types.indexOf(files[i].split('.').pop()) > -1) {
                 var songToAdd = {
-                    'path': files[i].src,
-                    'attr': files[i].attr,
+                    'path': files[i],
                     'last_played': '',
                     'played': false
                 };
-                if (that.options.forced.force && files[i].src.match(that.options.forced.expression)) {
+                if (that.options.forced.force && files[i].match(that.options.forced.expression)) {
                     that.songsForced.push(songToAdd);
                 } else {
-                    that.songs.push();
+                    that.songs.push(songToAdd);
                 }
             }
         }
@@ -90,15 +88,11 @@ module.exports = function(poptions) {
     function getNextForced() {
         if (that.pl_index % that.options.forced.every === 0 &&
             that.forced_count < that.options.forced.count) {
-            that.forced_index = that.forced_index >= that.songsForced.index + 1 ? 0 : that.forced_index + 1;
+            that.forced_index = that.forced_index + 1 >= that.songsForced.length ? 0 : that.forced_index + 1;
             that.forced_count++;
             return {
                 'use': true,
-                'song': {
-                    path: that.songsForced[that.forced_index],
-                    last_played: new Date(),
-                    played: true
-                }
+                'song': that.songsForced[that.forced_index]
             };
         } else {
             that.forced_count = 0;
