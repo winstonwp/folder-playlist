@@ -5,6 +5,9 @@ module.exports = function(poptions) {
     var that = this;
     that.options = {};
     that.songs = [];
+    // that.forced = [];
+    that.forced_index = -1;
+    that.forced_count = 0;
     that.pl_index = -1;
     that.pl = [];
     /**
@@ -16,6 +19,9 @@ module.exports = function(poptions) {
             that.options.song_src = options.song_src || '';
             that.options.shuffle = options.shuffle || false;
             that.options.song_types = options.song_types || ['mp3', 'mp4', 'ogg', 'oggv'];
+            that.options.forced = options.forced || {
+                force: false
+            };
             setSongs(that.options.song_src);
         }
     }
@@ -44,14 +50,21 @@ module.exports = function(poptions) {
             throw new Error('Song source should be an array or a valid folder path');
         }
         that.songs = [];
+        that.songsForced = [];
         for (var i = 0; i < files.length; i++) {
+            console.log(files[i], i);
             if (that.options.song_types.indexOf(files[i].src.split('.').pop()) > -1) {
-                that.songs.push({
+                var songToAdd = {
                     'path': files[i].src,
                     'attr': files[i].attr,
                     'last_played': '',
                     'played': false
-                });
+                };
+                if (that.options.forced.force && files[i].src.match(that.options.forced.expression)) {
+                    that.songsForced.push(songToAdd);
+                } else {
+                    that.songs.push();
+                }
             }
         }
         that.options.shuffle ? shuffleOn() : shuffleOff();
@@ -73,12 +86,36 @@ module.exports = function(poptions) {
         that.pl = that.songs;
         that.options.shuffle = false;
     }
+
+    function getNextForced() {
+        if (that.pl_index % that.options.forced.every === 0 &&
+            that.forced_count < that.options.forced.count) {
+            that.forced_index = that.forced_index >= that.songsForced.index + 1 ? 0 : that.forced_index + 1;
+            that.forced_count++;
+            return {
+                'use': true,
+                'song': {
+                    path: that.songsForced[that.forced_index],
+                    last_played: new Date(),
+                    played: true
+                }
+            };
+        } else {
+            that.forced_count = 0;
+            return {
+                'use': false
+            };
+        }
+    }
     /**
      * Gets the next song to play according to the options
      * @return {object} {'path':'song_path',last_played:'date', played:'bool'}
      */
     function getNextSong() {
         var selected_song;
+        var nextForced = getNextForced();
+        if (nextForced.use)
+            return nextForced.song;
         if (that.pl.length < 1)
             return {};
         if (that.pl_index + 1 >= that.pl.length) {
@@ -137,11 +174,11 @@ module.exports = function(poptions) {
 
     return module;
 };
- /**
-  * Determines if a folder exists synchronously
-  * @param  {string} directory
-  * @return {bool}           if folder exists
-  */
+/**
+ * Determines if a folder exists synchronously
+ * @param  {string} directory
+ * @return {bool}           if folder exists
+ */
 function existsSync(directory) {
     try {
         fs.statSync(directory);
