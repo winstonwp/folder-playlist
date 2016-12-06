@@ -52,14 +52,14 @@ module.exports = function(poptions) {
         that.songs = [];
         that.songsForced = [];
         for (var i = 0; i < files.length; i++) {
-            if (that.options.song_types.indexOf(files[i].split('.').pop()) > -1) {
+            if (that.options.song_types.indexOf(files[i].src.split('.').pop()) > -1) {
                 var songToAdd = {
                     'path': files[i].src,
                     'attr': files[i].attr,
                     'last_played': '',
                     'played': false
                 };
-                if (that.options.forced.force && files[i].match(that.options.forced.expression)) {
+                if (that.options.forced.force && files[i].src.match(that.options.forced.expression)) {
                     that.songsForced.push(songToAdd);
                 } else {
                     that.songs.push(songToAdd);
