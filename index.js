@@ -90,10 +90,17 @@ module.exports = function(poptions) {
             that.forced_count < that.options.forced.count) {
             that.forced_index = that.forced_index + 1 >= that.songsForced.length ? 0 : that.forced_index + 1;
             that.forced_count++;
-            return {
-                'use': true,
-                'song': that.songsForced[that.forced_index]
-            };
+            if(typeof that.songsForced[that.forced_index] !== 'undefined'){
+                return {
+                    'use': true,
+                    'song': that.songsForced[that.forced_index]
+                };
+            } else{
+                that.forced_count = 0;
+                return {
+                    'use': false
+                };
+            }
         } else {
             that.forced_count = 0;
             return {
