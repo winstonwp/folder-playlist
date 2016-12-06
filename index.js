@@ -54,7 +54,8 @@ module.exports = function(poptions) {
         for (var i = 0; i < files.length; i++) {
             if (that.options.song_types.indexOf(files[i].split('.').pop()) > -1) {
                 var songToAdd = {
-                    'path': files[i],
+                    'path': files[i].src,
+                    'attr': files[i].attr,
                     'last_played': '',
                     'played': false
                 };
